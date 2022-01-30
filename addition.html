@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <script src="https://unpkg.com/react@17/umd/react.production.min.js" crossorigin></script>
+    <script src="https://unpkg.com/react-dom@17/umd/react-dom.production.min.js" crossorigin></script>
+    <script src="https://unpkg.com/babel-standalone@6/babel.min.js"></script>
+    <title>Addition Game</title>
+    <style>
+        .wrong{
+            color: red;
+        }
+
+        #app{
+            text-align: center;
+            background-color: #DFCFBE;
+            height: 100%;
+            width: auto;
+            margin: 0px;
+            border-radius: 1mm;
+            padding: 15px;
+        }
+    </style>
+</head>
+<body>
+    <div id="app"></div>
+
+    <script type="text/babel">
+        
+        class Solve extends React.Component {
+            constructor(props){
+                super(props);
+                this.state = {
+                    n1 : 65,
+                    n2 : 85,
+                    response : "",
+                    score : 0,
+                    wrong : false
+                }
+            }
+
+            render() {
+                if (this.state.score >= 5){
+                    return this.renderwinner();
+                }
+                else
+                {
+                    return this.renderproblem();
+                }
+            }
+
+            renderproblem() {
+                return(
+                    <div>
+                        <h1 className = {this.state.wrong ? "wrong" : ""}>{this.state.n1} + {this.state.n2}</h1>
+                        <input  onKeyPress = {this.checkkey} onChange={this.updateresponse} autofocus value = {this.state.response} />
+                        <div>
+                        <h2> Score : {this.state.score}</h2>
+                        </div>
+                    </div>
+                );   
+            }
+
+
+            renderwinner() {
+                return(
+                    <div id = "winner">
+                        <h1> Congrats player, You WON!!!</h1>
+                    </div>
+                );
+            }
+
+            updateresponse = (event) =>
+            {
+                this.setState({
+                    response: event.target.value
+                })
+            }
+
+            checkkey = (event) =>
+            {
+                if(event.key === "Enter")
+                {
+                    const answer = parseInt(this.state.response);
+                    if( answer === this.state.n1 + this.state.n2)
+                    {
+                        //answer is right
+                        this.setState(state => ({
+                            score : state.score + 1 ,
+                            n1 :  Math.ceil(Math.random() * 100),
+                            n2 : Math.ceil(Math.random() * 100),
+                            response : "",
+                            wrong : false
+                        }));
+                    }
+                    else{
+                        //answer is wrong
+                        this.setState(state => ({
+                            response : "",
+                            wrong : true
+                        }));
+                    }
+                }
+            }
+
+        }
+
+        class App extends React.Component {
+            render(){
+                return(
+                    <div>
+                        <Solve />
+                    </div>
+                );  
+            }
+        }
+
+        
+        ReactDOM.render(<App /> , document.querySelector("#app"));
+    </script>
+</body>
+</html>
